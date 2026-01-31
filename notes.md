@@ -1,0 +1,2 @@
+Quiero hacer una página web muy sencilla en PHP 8.3 para aprender inglés. La página irá mostrando palabras o frases en español y pasando un tiempo aparecerá la respuesta en inglés. El contenido se cargará mediante un fichero TSV, en la primera columna aparecerá el texto en español y en la segunda columna el resultado en inglés.
+- Revisar web: https://mylittlewordland.com/course/431411/vaughan-translation-booklet-3-audio

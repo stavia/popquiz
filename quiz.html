@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PopQuiz - Aprende Inglés</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            color: white;
+            padding: 20px 10px 10px 10px;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+        }
+
+        @media (min-width: 480px) {
+            .container {
+                padding: 30px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px;
+            }
+        }
+
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            margin-top: 50px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (min-width: 480px) {
+            h1 {
+                font-size: 2.2em;
+                margin-bottom: 25px;
+                margin-top: 55px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+                margin-bottom: 30px;
+                margin-top: 60px;
+            }
+        }
+
+        .word-container {
+            margin: 20px 0;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        @media (min-width: 480px) {
+            .word-container {
+                margin: 30px 0;
+                min-height: 120px;
+            }
+        }
+
+        .origin-word {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            padding: 0 10px;
+            line-height: 1.4;
+            max-width: 100%;
+        }
+
+        @media (min-width: 480px) {
+            .origin-word {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .origin-word {
+                font-size: 1.5em;
+            }
+        }
+
+        .result-word {
+            font-size: 1.2em;
+            font-weight: 300;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            padding: 0 10px;
+            line-height: 1.4;
+            max-width: 100%;
+        }
+
+        @media (min-width: 480px) {
+            .result-word {
+                font-size: 1.6em;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .result-word {
+                font-size: 1.5em;
+            }
+        }
+
+        .result-word.show {
+            opacity: 1;
+        }
+
+        .timer {
+            font-size: 1.0em;
+            margin: 20px 0;
+            color: #ffd700;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 480px) {
+            .controls {
+                margin-top: 30px;
+            }
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 0;
+            transition: all 0.3s ease;
+            width: auto;
+        }
+
+        @media (min-width: 480px) {
+            button {
+                padding: 12px 24px;
+                font-size: 1em;
+            }
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .stats {
+            margin-top: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .wake-lock-status {
+            margin-top: 10px;
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        #wakeLockBtn.active {
+            background: rgba(0, 255, 0, 0.25);
+            border-color: rgba(0, 255, 0, 0.45);
+        }
+
+        .time-selector {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .time-selector label {
+            color: white;
+            opacity: 0.9;
+        }
+
+        .time-selector select {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .time-selector select:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .time-selector select option {
+            background: #764ba2;
+            color: white;
+        }
+
+        .review-selector {
+            margin-top: 15px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.9em;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .review-selector label {
+            color: white;
+            opacity: 0.9;
+            font-weight: bold;
+        }
+
+        .review-selector select {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            outline: none;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .review-selector select:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .review-selector select option {
+            background: #764ba2;
+            color: white;
+        }
+
+        .audio-controls {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 20px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .audio-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .audio-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .audio-btn:active {
+            transform: scale(0.95);
+        }
+
+        .audio-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #playPauseBtn {
+            font-size: 1.2em;
+        }
+
+        #nextBtn {
+            font-size: 1.2em;
+        }
+
+        #showAnswerBtn {
+            font-size: 1.2em;
+        }
+
+        #saveFailedBtn {
+            font-size: 1.2em;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            width: auto;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 480px) {
+            .home-btn {
+                padding: 10px 20px;
+                font-size: 0.9em;
+                top: 15px;
+                left: 15px;
+            }
+        }
+
+        .home-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .home-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <button class="home-btn" onclick="window.location.href='index.html'">🏠 Inicio</button>
+
+        <h1>🎓 PopQuiz Inglés</h1>
+
+        <div class="word-container">
+            <div class="origin-word" id="originWord">Cargando...</div>
+            <div class="result-word" id="resultWord"></div>
+        </div>
+
+        <div class="audio-controls" id="audioControls">
+            <button class="audio-btn" onclick="showAnswer()" id="showAnswerBtn" title="Mostrar Respuesta" disabled>👁️</button>
+            <button class="audio-btn" onclick="togglePlayPause()" id="playPauseBtn" data-icon="▶" disabled>▶</button>
+            <button class="audio-btn" onclick="nextWord()" id="nextBtn" data-icon="⏭" title="Siguiente Palabra">⏭</button>
+            <button class="audio-btn" onclick="saveFailedWord()" id="saveFailedBtn" title="Guardar Palabra Fallada" style="display: none;">❌</button>
+        </div>
+
+        <div class="timer" id="timer">Tiempo restante: <span id="timeLeft">8</span>s</div>
+        <div class="timer" id="nextWordTimer" style="display: none;">Siguiente tarjeta en: <span id="nextWordCountdown">5</span>s</div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="controls">
+            <button onclick="toggleAutoMode()" id="autoBtn">Modo Automático</button>
+            <button onclick="toggleAuditoryMode()" id="auditoryBtn">100% Auditiva</button>
+            <button onclick="toggleReviewMode()" id="reviewBtn">Repaso 25 Palabras</button>
+            <button onclick="toggleWakeLock()" id="wakeLockBtn" title="Evita que se apague la pantalla">Pantalla activa</button>
+            <button onclick="clearFailedWords()" id="clearFailedBtn">🗑️ Vaciar Fallidas</button>
+        </div>
+
+        <div class="review-selector" id="reviewSelector">
+            <select id="reviewListSelect" onchange="selectReviewList()">
+                <option value="">-- Selecciona un listado --</option>
+            </select>
+        </div>
+
+        <div class="time-selector">
+            <label for="responseTime">Tiempo para responder:</label>
+            <select id="responseTime" onchange="changeResponseTime()">
+                <option value="3">3 segundos</option>
+                <option value="5">5 segundos</option>
+                <option value="8">8 segundos</option>
+                <option value="10" selected>10 segundos</option>
+                <option value="12">12 segundos</option>
+                <option value="15">15 segundos</option>
+                <option value="20">20 segundos</option>
+            </select>
+        </div>
+
+        <div class="stats">
+            <p>Nivel: <span style="color: #ffd700; font-weight: bold; margin-top: 10px;" id="currentLevel">-</span></p>
+            <p id="reviewModeInfo" style="display: none;">
+                📚 Modo Repaso: <span id="reviewListSize">25</span> palabras |
+                Palabra <span id="reviewCardNumber">-</span> de <span id="reviewListTotal">25</span>
+            </p>
+            <p id="wakeLockStatus" class="wake-lock-status"></p>
+        </div>
+    </div>
+
+    <script>
+        // Valor inicial (se ajusta luego con `responseTime` y modo auditivo al cargar el vocabulario).
+        let timeLeft = 8;
+        let timerInterval;
+        let autoMode = false; // Modo automático desactivado por defecto
+        let auditoryMode = false; // Modo auditivo desactivado por defecto
+        let progressInterval;
+        let speechSynthesis = window.speechSynthesis;
+        let currentUtterance = null;
+        let isPlaying = false;
+        let autoModeTimer = null;
+        let nextWordCountdown = 5;
+        let countdownInterval = null;
+        let responseTime = 8; // Tiempo configurable en segundos
+
+        // Mantener pantalla activa (Wake Lock API)
+        // Nota: requiere gesto del usuario y normalmente HTTPS (o localhost).
+        let wakeLock = null;
+        let wakeLockWanted = false;
+
+        function isLikelyIOS() {
+            // Chrome/Firefox iOS también usan WebKit y comparten limitaciones.
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+
+        function isLikelyMobileDevice() {
+            // Heurística simple: móviles/tablets o input "coarse".
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+                (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+        }
+
+        function isWakeLockAutoDisabled() {
+            try {
+                return localStorage.getItem('popquiz_wakeLockDisabled') === '1';
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function setWakeLockAutoDisabled(disabled) {
+            try {
+                if (disabled) {
+                    localStorage.setItem('popquiz_wakeLockDisabled', '1');
+                } else {
+                    localStorage.removeItem('popquiz_wakeLockDisabled');
+                }
+            } catch (e) {
+                // Ignorar si storage no está disponible
+            }
+        }
+
+        function setWakeLockStatus(message) {
+            const el = document.getElementById('wakeLockStatus');
+            if (!el) return;
+            el.textContent = message || '';
+        }
+
+        function syncWakeLockUi() {
+            const btn = document.getElementById('wakeLockBtn');
+            if (!btn) return;
+            btn.classList.toggle('active', !!(wakeLock && wakeLockWanted));
+        }
+
+        async function requestWakeLock() {
+            if (!window.isSecureContext) {
+                wakeLockWanted = false;
+                setWakeLockStatus('Mantener pantalla activa: requiere HTTPS (o localhost).');
+                syncWakeLockUi();
+                return;
+            }
+
+            if (!('wakeLock' in navigator) || !navigator.wakeLock) {
+                wakeLockWanted = false;
+                if (isLikelyIOS()) {
+                    setWakeLockStatus('Mantener pantalla activa: no disponible en iPhone/iPad (limitación del navegador).');
+                } else {
+                    setWakeLockStatus('Mantener pantalla activa: no disponible en este navegador.');
+                }
+                syncWakeLockUi();
+                return;
+            }
+
+            wakeLockWanted = true;
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                setWakeLockStatus('Mantener pantalla activa: activado.');
+                syncWakeLockUi();
+
+                wakeLock.addEventListener('release', () => {
+                    // El sistema puede soltarlo (bloqueo pantalla, cambio de pestaña, etc.)
+                    if (!wakeLockWanted) {
+                        setWakeLockStatus('Mantener pantalla activa: desactivado.');
+                    } else {
+                        setWakeLockStatus('Mantener pantalla activa: liberado (vuelve a tocar "Pantalla activa" si hace falta).');
+                    }
+                    syncWakeLockUi();
+                });
+            } catch (err) {
+                // Ej: NotAllowedError, NotSupportedError
+                wakeLockWanted = false;
+                setWakeLockStatus('Mantener pantalla activa: no se pudo activar (toca "Pantalla activa" e intenta de nuevo).');
+                syncWakeLockUi();
+                console.log('Wake Lock error:', err);
+            }
+        }
+
+        async function releaseWakeLock() {
+            wakeLockWanted = false;
+            try {
+                if (wakeLock) {
+                    await wakeLock.release();
+                    wakeLock = null;
+                }
+            } catch (err) {
+                console.log('Wake Lock release error:', err);
+            } finally {
+                setWakeLockStatus('Mantener pantalla activa: desactivado.');
+                syncWakeLockUi();
+            }
+        }
+
+        async function toggleWakeLock() {
+            if (wakeLockWanted || wakeLock) {
+                // Si el usuario lo desactiva manualmente, no auto-activar después.
+                setWakeLockAutoDisabled(true);
+                await releaseWakeLock();
+            } else {
+                // Si el usuario lo activa manualmente, permitir auto-activación.
+                setWakeLockAutoDisabled(false);
+                await requestWakeLock();
+            }
+        }
+
+        function setupWakeLock() {
+            const isMobile = isLikelyMobileDevice();
+            const shouldAutoEnable = isMobile && !isWakeLockAutoDisabled();
+
+            // Ocultar el botón en escritorio (solo mostrarlo en móviles).
+            const wakeBtn = document.getElementById('wakeLockBtn');
+            if (wakeBtn) {
+                wakeBtn.style.display = isMobile ? '' : 'none';
+            }
+
+            // Si NO es móvil, no mostramos mensajes ni intentamos Wake Lock.
+            if (!isMobile) {
+                setWakeLockStatus('');
+                syncWakeLockUi();
+                return;
+            }
+
+            // Auto-activar en móviles: pedir Wake Lock en el primer gesto del usuario.
+            if (shouldAutoEnable) {
+                const onFirstUserGesture = () => {
+                    requestWakeLock();
+                };
+
+                document.addEventListener('click', onFirstUserGesture, { once: true, passive: true });
+                document.addEventListener('touchstart', onFirstUserGesture, { once: true, passive: true });
+                document.addEventListener('keydown', onFirstUserGesture, { once: true });
+            }
+
+            // Si el usuario vuelve a la pestaña, re-pedir el Wake Lock si estaba activo.
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible' && wakeLockWanted) {
+                    requestWakeLock();
+                }
+            });
+
+            // Estado inicial
+            if (!window.isSecureContext) {
+                setWakeLockStatus('Mantener pantalla activa: requiere HTTPS (o localhost).');
+            } else if (!('wakeLock' in navigator) || !navigator.wakeLock) {
+                if (isLikelyIOS()) {
+                    setWakeLockStatus('Mantener pantalla activa: no disponible en iPhone/iPad (limitación del navegador).');
+                } else {
+                    setWakeLockStatus('Mantener pantalla activa: no disponible en este navegador.');
+                }
+            } else {
+                if (shouldAutoEnable) {
+                    setWakeLockStatus('Mantener pantalla activa: se activará automáticamente al primer toque.');
+                } else {
+                    setWakeLockStatus('Mantener pantalla activa: pulsa "Pantalla activa".');
+                }
+            }
+            syncWakeLockUi();
+        }
+
+        // Cargar nivel desde localStorage
+        const savedLevel = localStorage.getItem('popquiz_level') || 'intermediate';
+
+        function normalizeDatasetBase(base) {
+            if (!base) return '';
+            return base.endsWith('/') ? base : `${base}/`;
+        }
+
+        // Posibles ubicaciones del dataset TSV (en orden de prioridad)
+        // - `popquiz_dataset_base` (localStorage): ruta/URL personalizada (p.ej. raw.githubusercontent.com)
+        // - GitHub raw de `stavia/popquiz-data`
+        // - `data/tsv/`: dataset dentro de este repo (estructura actual)
+        // - `data/popquiz-data/...`: repo externo clonado como carpeta/submódulo
+        const userConfiguredDatasetBase = normalizeDatasetBase(localStorage.getItem('popquiz_dataset_base'));
+
+        // Intentar GitHub raw por defecto (main/master + posibles layouts)
+        const githubRawDatasetBaseCandidates = [
+            'https://raw.githubusercontent.com/stavia/popquiz-data/main/tsv/',
+            'https://raw.githubusercontent.com/stavia/popquiz-data/main/data/tsv/',
+            'https://raw.githubusercontent.com/stavia/popquiz-data/master/tsv/',
+            'https://raw.githubusercontent.com/stavia/popquiz-data/master/data/tsv/'
+        ];
+
+        const datasetBaseCandidates = [
+            ...(userConfiguredDatasetBase ? [userConfiguredDatasetBase] : []),
+            ...githubRawDatasetBaseCandidates,
+            'data/tsv/',
+            'data/popquiz-data/tsv/',
+            'data/popquiz-data/data/tsv/'
+        ];
+
+        function buildLevelFiles(base) {
+            return {
+                'beginner': `${base}book/beginner.tsv`,
+                'vocabulario': `${base}vocabulary.tsv`,
+                'intermediate': `${base}book/intermediate.tsv`,
+                'advanced': `${base}book/advanced.tsv`,
+                'pronunciation': `${base}pronunciation.tsv`,
+                'custom': `${base}notebook.tsv`
+            };
+        }
+
+        function getCandidateFilesForLevel(level) {
+            return datasetBaseCandidates.map((base) => {
+                const levelFiles = buildLevelFiles(base);
+                return levelFiles[level] || levelFiles['custom'];
+            });
+        }
+
+        // Mapeo de nombres de nivel para mostrar
+        const levelNames = {
+            'beginner': 'Principiante',
+            'vocabulario': 'Vocabulario',
+            'intermediate': 'Intermedio',
+            'advanced': 'Avanzado',
+            'pronunciation': 'Pronunciación',
+            'custom': 'Personalizado'
+        };
+
+        // Cargar vocabulario según el nivel
+        let vocabulary = [];
+        let currentIndex = 0;
+        let usedIndices = new Set(); // Rastrear las palabras ya usadas
+        let reviewMode = false; // Modo de repaso de 25 palabras
+        let reviewList = []; // Lista de 25 palabras para repaso
+        let reviewUsedIndices = new Set(); // Índices usados dentro de la lista de repaso
+        let failedWords = []; // Lista de palabras falladas guardadas
+
+        // Función para cargar vocabulario desde el archivo TSV
+        async function loadVocabularyFromFile(filename) {
+            try {
+                console.log('Loading vocabulary from:', filename);
+                const response = await fetch(filename);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const text = await response.text();
+                const lines = text.split('\n').filter(line => line.trim());
+
+                const vocab = lines.map(line => {
+                    const parts = line.split('\t');
+                    return {
+                        origin: parts[0]?.trim() || '',
+                        result: parts[1]?.trim() || ''
+                    };
+                }).filter(item => item.origin && item.result);
+
+                console.log('Loaded vocabulary items:', vocab.length);
+                return vocab;
+            } catch (error) {
+                console.error('Error loading vocabulary:', error);
+                throw error; // Lanzar el error en lugar de retornar vocabulario vacío
+            }
+        }
+
+        async function loadVocabularyFromFirstAvailable(filenames) {
+            let lastError = null;
+            for (const filename of filenames) {
+                try {
+                    const vocab = await loadVocabularyFromFile(filename);
+                    return { vocab, source: filename };
+                } catch (err) {
+                    lastError = err;
+                    console.warn('Failed to load vocabulary from:', filename, err);
+                }
+            }
+
+            const error = new Error(
+                `No se pudo cargar ningún dataset TSV. Probados:\n- ${filenames.join('\n- ')}`
+            );
+            error.cause = lastError;
+            throw error;
+        }
+
+
+        function playAudio(language = 'result') {
+            let text, lang, rate;
+
+            if (language === 'origin') {
+                text = document.getElementById('originWord').textContent;
+                lang = 'es-ES';
+                rate = 1.0;
+            } else {
+                text = document.getElementById('resultWord').textContent;
+                lang = 'en-US';
+                rate = 0.85;
+            }
+
+            if (!speechSynthesis) {
+                alert('Tu navegador no soporta síntesis de voz');
+                return;
+            }
+
+            // Cancelar cualquier audio anterior
+            speechSynthesis.cancel();
+
+            // Crear nueva utterance
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = lang;
+            currentUtterance.rate = rate;
+            currentUtterance.pitch = 1;
+
+            if (language === 'origin') {
+                selectVoiceForOrigin();
+            } else {
+                selectVoiceForResult();
+            }
+
+            // Eventos de control
+            currentUtterance.onstart = function() {
+                isPlaying = true;
+                const btn = document.getElementById('playPauseBtn');
+                btn.classList.add('playing');
+                btn.textContent = '⏸';
+            };
+
+            currentUtterance.onend = function() {
+                isPlaying = false;
+                const btn = document.getElementById('playPauseBtn');
+                btn.classList.remove('playing');
+                btn.textContent = '▶';
+
+                // Si está en modo automático y se reproduce inglés, iniciar timer para siguiente palabra
+                if (autoMode && language === 'result') {
+                    startAutoModeTimer();
+                }
+            };
+
+            currentUtterance.onerror = function() {
+                isPlaying = false;
+                const btn = document.getElementById('playPauseBtn');
+                btn.classList.remove('playing');
+                btn.textContent = '▶';
+                console.log('Error en síntesis de voz');
+            };
+
+            // Reproducir
+            speechSynthesis.speak(currentUtterance);
+        }
+
+        function selectVoiceForOrigin() {
+            const voices = speechSynthesis.getVoices();
+            const spanishVoices = voices.filter(v => v.lang.startsWith('es-ES'));
+            const googleVoice = spanishVoices.find(v => v.name.startsWith('Google'));
+            if (googleVoice) {
+                currentUtterance.voice = googleVoice;
+            } else {
+                const enhancedSpanishVoices = spanishVoices.filter(voice =>
+                    (voice.name.includes('Enhanced')));
+                if (enhancedSpanishVoices.length > 0) {
+                    currentUtterance.voice = enhancedSpanishVoices[0];
+                } else {
+                    currentUtterance.voice = spanishVoices.find(v => v.name.includes('Marisol') ||
+                        v.name.includes('Mónica'));
+                }
+            }
+            console.log('Selected voice for origin:', currentUtterance.voice);
+        }
+
+        function selectVoiceForResult() {
+            const voices = speechSynthesis.getVoices();
+            const englishVoices = voices.filter(v => v.lang.startsWith('en-US'));
+            const googleVoice = englishVoices.find(v => v.name.startsWith('Google'));
+            if (googleVoice) {
+                currentUtterance.voice = googleVoice;
+            } else {
+                const defaultEnglishVoices = englishVoices.filter(v => v.default === true);
+                if (defaultEnglishVoices.length > 1) {
+                    currentUtterance.voice = englishVoices.find(v =>
+                        v.name.includes('Enhanced') ||
+                        v.name.includes('Premium') ||
+                        v.name === 'Samantha' ||
+                        v.name === 'Alex'
+                    ) || englishVoices[0];
+                } else {
+                    currentUtterance.voice = defaultEnglishVoices[0];
+                }
+            }
+            console.log('Selected voice for result:', currentUtterance.voice);
+        }
+
+        function pauseAudio() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.pause();
+                const btn = document.getElementById('playPauseBtn');
+                btn.classList.remove('playing');
+                btn.textContent = '▶';
+                isPlaying = false;
+            } else if (speechSynthesis.paused) {
+                // Si está pausado, ya está pausado, no hacer nada
+            } else {
+                // Detener cualquier síntesis en curso
+                speechSynthesis.cancel();
+                const btn = document.getElementById('playPauseBtn');
+                btn.classList.remove('playing');
+                btn.textContent = '▶';
+                isPlaying = false;
+            }
+        }
+
+        function togglePlayPause() {
+            const btn = document.getElementById('playPauseBtn');
+
+            if (speechSynthesis.speaking && btn.classList.contains('playing')) {
+                // Está reproduciendo, pausar
+                pauseAudio();
+            } else if (speechSynthesis.paused) {
+                // Está pausado, reanudar
+                speechSynthesis.resume();
+                btn.classList.add('playing');
+                btn.textContent = '⏸';
+                isPlaying = true;
+            } else {
+                // No está reproduciendo, iniciar
+                playAudio('result');
+            }
+        }
+
+        function startTimer() {
+            // Aumentar tiempo en modo auditivo para dar más tiempo para pensar
+            // Usar responseTime configurado por el usuario
+            const currentDelaySeconds = auditoryMode ? (responseTime + 4) : responseTime;
+            timeLeft = currentDelaySeconds;
+            document.getElementById('timeLeft').textContent = timeLeft;
+            document.getElementById('resultWord').classList.remove('show');
+
+            // Deshabilitar botones durante el timer
+            document.getElementById('playPauseBtn').disabled = true;
+            document.getElementById('showAnswerBtn').disabled = false;
+
+            // Ocultar botón para guardar palabra fallada
+            document.getElementById('saveFailedBtn').style.display = 'none';
+
+            // Reiniciar barra de progreso
+            document.getElementById('progressFill').style.width = '0%';
+
+            // Reproducir automáticamente la palabra en español al inicio solo en modo auditivo
+            if (auditoryMode) {
+                setTimeout(() => {
+                    playAudio('origin');
+                }, 300); // Pequeño delay para que aparezca primero el texto
+            }
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timeLeft').textContent = timeLeft;
+
+                // Actualizar barra de progreso
+                const progress = ((currentDelaySeconds - timeLeft) / currentDelaySeconds) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showAnswer();
+                }
+            }, 1000);
+        }
+
+        function showAnswer() {
+            // Limpiar timer si existe
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+
+            // Limpiar timer del modo automático si existe
+            if (autoModeTimer) {
+                clearTimeout(autoModeTimer);
+                autoModeTimer = null;
+            }
+
+            // Limpiar cuenta regresiva si existe
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+
+            document.getElementById('resultWord').classList.add('show');
+            document.getElementById('timer').style.display = 'none';
+
+            // Ocultar cuenta regresiva si está visible
+            document.getElementById('nextWordTimer').style.display = 'none';
+
+            // Habilitar botones ahora que la respuesta está visible
+            document.getElementById('playPauseBtn').disabled = false;
+            document.getElementById('showAnswerBtn').disabled = false;
+
+            // Mostrar botón para guardar palabra fallada
+            document.getElementById('saveFailedBtn').style.display = 'flex';
+
+            // Reproducir automáticamente la pronunciación en inglés siempre
+            setTimeout(() => {
+                playAudio('result');
+            }, 500); // Pequeño delay para que aparezca primero el texto
+        }
+
+        function nextWord() {
+            clearInterval(timerInterval);
+
+            // Limpiar timer del modo automático
+            if (autoModeTimer) {
+                clearTimeout(autoModeTimer);
+                autoModeTimer = null;
+            }
+
+            // Limpiar cuenta regresiva
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+
+            // Ocultar cuenta regresiva
+            document.getElementById('nextWordTimer').style.display = 'none';
+
+            // Detener cualquier audio que esté reproduciéndose
+            speechSynthesis.cancel();
+            document.getElementById('playPauseBtn').disabled = true;
+            document.getElementById('showAnswerBtn').disabled = false;
+
+            // Ocultar botón para guardar palabra fallada
+            document.getElementById('saveFailedBtn').style.display = 'none';
+
+            let selectedIndex;
+
+            if (reviewMode && reviewList.length > 0) {
+                // Modo de repaso: trabajar solo con las 25 palabras seleccionadas
+                let availableInReview = [];
+                for (let i = 0; i < reviewList.length; i++) {
+                    if (!reviewUsedIndices.has(i)) {
+                        availableInReview.push(i);
+                    }
+                }
+
+                // Si ya se usaron todas las palabras del repaso, resetear
+                if (availableInReview.length === 0) {
+                    reviewUsedIndices = new Set();
+                    availableInReview = [];
+                    for (let i = 0; i < reviewList.length; i++) {
+                        availableInReview.push(i);
+                    }
+                    // Evitar seleccionar la misma palabra que acabamos de ver
+                    if (currentIndex >= 0 && reviewList.includes(currentIndex)) {
+                        const currentReviewIndex = reviewList.indexOf(currentIndex);
+                        availableInReview = availableInReview.filter(i => i !== currentReviewIndex);
+                        if (availableInReview.length === 0) {
+                            // Si solo había una palabra, resetear todo
+                            availableInReview = Array.from({
+                                length: reviewList.length
+                            }, (_, i) => i);
+                        }
+                    }
+                }
+
+                // Seleccionar la siguiente palabra en orden (la primera disponible)
+                // Como availableInReview está ordenado, esto asegura el orden secuencial
+                const reviewIndex = availableInReview[0];
+                selectedIndex = reviewList[reviewIndex];
+                reviewUsedIndices.add(reviewIndex);
+
+                // Actualizar estadísticas del modo repaso
+                document.getElementById('reviewCardNumber').textContent = reviewUsedIndices.size;
+                document.getElementById('reviewListTotal').textContent = reviewList.length;
+                // Mostrar información del modo repaso
+                document.getElementById('reviewModeInfo').style.display = 'block';
+            } else {
+                // Modo normal: trabajar con todo el vocabulario
+                let availableIndices = [];
+                for (let i = 0; i < vocabulary.length; i++) {
+                    if (!usedIndices.has(i)) {
+                        availableIndices.push(i);
+                    }
+                }
+
+                // Si ya se usaron todas las palabras, resetea el conjunto
+                if (availableIndices.length === 0) {
+                    usedIndices = new Set([currentIndex]);
+                    availableIndices = [];
+                    for (let i = 0; i < vocabulary.length; i++) {
+                        if (i !== currentIndex) {
+                            availableIndices.push(i);
+                        }
+                    }
+                }
+
+                // Seleccionar una palabra aleatoria de las disponibles
+                const randomAvailable = Math.floor(Math.random() * availableIndices.length);
+                selectedIndex = availableIndices[randomAvailable];
+                usedIndices.add(selectedIndex);
+
+                // Ocultar información del modo repaso
+                document.getElementById('reviewModeInfo').style.display = 'none';
+            }
+
+            currentIndex = selectedIndex;
+
+            // Actualizar contenido
+            // Ocultar la respuesta inmediatamente sin transición para evitar que se vea la nueva respuesta
+            const resultElement = document.getElementById('resultWord');
+            resultElement.style.transition = 'none';
+            resultElement.classList.remove('show');
+            resultElement.style.opacity = '0'; // Asegurar que esté oculto
+
+            // Actualizar contenido
+            document.getElementById('originWord').textContent = vocabulary[currentIndex].origin;
+            resultElement.textContent = vocabulary[currentIndex].result;
+
+            // Forzar reflow
+            void resultElement.offsetWidth;
+
+            // Restaurar transición
+            resultElement.style.transition = '';
+            resultElement.style.opacity = '';
+
+            // Reiniciar timer
+            startTimer();
+        }
+
+        function toggleAutoMode() {
+            autoMode = !autoMode;
+            const btn = document.getElementById('autoBtn');
+
+            if (autoMode) {
+                btn.textContent = 'Parar Automático';
+                btn.style.background = 'rgba(255, 0, 0, 0.3)';
+                startAutoMode();
+            } else {
+                btn.textContent = 'Modo Automático';
+                btn.style.background = 'rgba(255, 255, 255, 0.2)';
+                // Limpiar timer del modo automático
+                if (autoModeTimer) {
+                    clearTimeout(autoModeTimer);
+                    autoModeTimer = null;
+                }
+                // Limpiar cuenta regresiva
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                }
+                // Ocultar cuenta regresiva
+                document.getElementById('nextWordTimer').style.display = 'none';
+            }
+        }
+
+        function startAutoModeTimer() {
+            // Limpiar timer anterior si existe
+            if (autoModeTimer) {
+                clearTimeout(autoModeTimer);
+            }
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            // Mostrar cuenta regresiva
+            document.getElementById('nextWordTimer').style.display = 'block';
+            nextWordCountdown = 5;
+            document.getElementById('nextWordCountdown').textContent = nextWordCountdown;
+
+            // Iniciar cuenta regresiva
+            countdownInterval = setInterval(() => {
+                nextWordCountdown--;
+                document.getElementById('nextWordCountdown').textContent = nextWordCountdown;
+
+                if (nextWordCountdown <= 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('nextWordTimer').style.display = 'none';
+                    nextWord();
+                }
+            }, 1000);
+        }
+
+        function startAutoMode() {
+            // El modo automático ahora se maneja por eventos de audio
+            // No necesitamos un interval fijo
+        }
+
+        function toggleAuditoryMode() {
+            auditoryMode = !auditoryMode;
+            const btn = document.getElementById('auditoryBtn');
+
+            if (auditoryMode) {
+                btn.textContent = 'Modo Visual';
+                btn.style.background = 'rgba(0, 255, 0, 0.3)';
+            } else {
+                btn.textContent = '100% Auditiva';
+                btn.style.background = 'rgba(255, 255, 255, 0.2)';
+            }
+
+            // Reiniciar el timer con el nuevo tiempo
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            startTimer();
+        }
+
+        function changeResponseTime() {
+            const select = document.getElementById('responseTime');
+            responseTime = parseInt(select.value);
+
+            // Guardar en localStorage
+            localStorage.setItem('popquiz_responseTime', responseTime);
+
+            // Reiniciar el timer con el nuevo tiempo
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            // Reiniciar tiempo actual si la respuesta aún no se ha mostrado
+            const currentDelaySeconds = auditoryMode ? (responseTime + 4) : responseTime;
+            timeLeft = currentDelaySeconds;
+            document.getElementById('timeLeft').textContent = currentDelaySeconds;
+
+            // Actualizar barra de progreso
+            const progress = ((currentDelaySeconds - timeLeft) / currentDelaySeconds) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Reiniciar el timer con el nuevo tiempo
+            startTimer();
+        }
+
+        function populateReviewSelector() {
+            const select = document.getElementById('reviewListSelect');
+            select.innerHTML = '<option value="">-- Selecciona un listado --</option>';
+
+            if (vocabulary.length === 0) return;
+
+            // Cargar palabras falladas desde localStorage
+            loadFailedWords();
+
+            // Añadir opción para repasar palabras falladas si hay alguna
+            if (failedWords.length > 0) {
+                const failedOption = document.createElement('option');
+                failedOption.value = 'failed';
+                failedOption.textContent = `📚 Palabras Falladas (${failedWords.length})`;
+                select.appendChild(failedOption);
+            }
+
+            const wordsPerList = 25;
+            const totalLists = Math.ceil(vocabulary.length / wordsPerList);
+
+            for (let i = 0; i < totalLists; i++) {
+                const startIndex = i * wordsPerList;
+                const endIndex = Math.min(startIndex + wordsPerList - 1, vocabulary.length - 1);
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Listado ${i + 1}: Palabras ${startIndex + 1}-${endIndex + 1}`;
+                select.appendChild(option);
+            }
+        }
+
+        function saveFailedWord() {
+            if (currentIndex < 0 || currentIndex >= vocabulary.length) return;
+
+            const word = vocabulary[currentIndex];
+            const wordKey = `${savedLevel}_${currentIndex}`;
+
+            // Cargar palabras falladas actuales
+            loadFailedWords();
+
+            // Verificar si ya está guardada
+            const alreadySaved = failedWords.some(fw => fw.level === savedLevel && fw.index === currentIndex);
+
+            if (!alreadySaved) {
+                // Guardar la palabra fallada
+                failedWords.push({
+                    level: savedLevel,
+                    index: currentIndex,
+                    origin: word.origin,
+                    result: word.result
+                });
+
+                // Guardar en localStorage
+                localStorage.setItem('popquiz_failedWords', JSON.stringify(failedWords));
+
+                // Actualizar el selector de repaso
+                populateReviewSelector();
+
+                // Feedback visual
+                const btn = document.getElementById('saveFailedBtn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅';
+                btn.style.background = 'rgba(0, 255, 0, 0.3)';
+
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 1000);
+            } else {
+                // Si ya está guardada, dar feedback
+                const btn = document.getElementById('saveFailedBtn');
+                const originalText = btn.textContent;
+                btn.textContent = '✓';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 500);
+            }
+        }
+
+        function loadFailedWords() {
+            const saved = localStorage.getItem('popquiz_failedWords');
+            if (saved) {
+                try {
+                    failedWords = JSON.parse(saved);
+                } catch (e) {
+                    failedWords = [];
+                }
+            } else {
+                failedWords = [];
+            }
+        }
+
+        function clearFailedWords() {
+            loadFailedWords();
+
+            if (failedWords.length === 0) {
+                alert('No hay palabras falladas guardadas.');
+                return;
+            }
+
+            const confirmMessage = `¿Estás seguro de que quieres eliminar las ${failedWords.length} palabras falladas guardadas?`;
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            // Limpiar localStorage
+            localStorage.removeItem('popquiz_failedWords');
+            failedWords = [];
+
+            // Si está en modo repaso con palabras falladas, salir de ese modo
+            const select = document.getElementById('reviewListSelect');
+            if (select.value === 'failed') {
+                select.value = '';
+                reviewList = [];
+                reviewUsedIndices = new Set();
+                document.getElementById('reviewModeInfo').style.display = 'none';
+                document.getElementById('originWord').textContent = 'Selecciona un listado de 25 palabras para comenzar';
+                document.getElementById('resultWord').textContent = '';
+                document.getElementById('resultWord').classList.remove('show');
+                stopQuiz();
+            }
+
+            // Actualizar el selector de repaso
+            populateReviewSelector();
+
+            alert('Palabras falladas eliminadas correctamente.');
+        }
+
+        function selectReviewList() {
+            const select = document.getElementById('reviewListSelect');
+            const listValue = select.value;
+
+            if (listValue === '') {
+                // Si se deselecciona (valor vacío), limpiar el modo repaso y detener el quiz
+                reviewList = [];
+                reviewUsedIndices = new Set();
+                document.getElementById('reviewModeInfo').style.display = 'none';
+                // Mostrar mensaje de espera
+                document.getElementById('originWord').textContent = 'Selecciona un listado de 25 palabras para comenzar';
+                document.getElementById('resultWord').textContent = '';
+                document.getElementById('resultWord').classList.remove('show');
+                // Detener el quiz
+                stopQuiz();
+                return;
+            }
+
+            // Solo continuar si estamos en modo repaso
+            if (!reviewMode) {
+                return;
+            }
+
+            // Si se selecciona "Palabras Falladas"
+            if (listValue === 'failed') {
+                loadFailedWords();
+
+                // Filtrar palabras falladas del nivel actual
+                const currentLevelFailed = failedWords.filter(fw => fw.level === savedLevel);
+
+                if (currentLevelFailed.length === 0) {
+                    alert('No hay palabras falladas guardadas para este nivel.');
+                    select.value = '';
+                    return;
+                }
+
+                // Crear lista con los índices de las palabras falladas
+                reviewList = currentLevelFailed.map(fw => fw.index);
+
+                // Actualizar información de la lista
+                document.getElementById('reviewListSize').textContent = reviewList.length;
+                document.getElementById('reviewListTotal').textContent = reviewList.length;
+                document.getElementById('reviewCardNumber').textContent = '0';
+
+                // Mostrar información del modo repaso
+                document.getElementById('reviewModeInfo').style.display = 'block';
+
+                // Seleccionar la primera palabra del repaso (orden secuencial)
+                const firstReviewIndex = 0;
+                currentIndex = reviewList[firstReviewIndex];
+                reviewUsedIndices = new Set([firstReviewIndex]);
+                document.getElementById('reviewCardNumber').textContent = reviewUsedIndices.size;
+
+                // Actualizar contenido
+                document.getElementById('originWord').textContent = vocabulary[currentIndex].origin;
+                document.getElementById('resultWord').textContent = vocabulary[currentIndex].result;
+                // Ocultar la respuesta inicialmente
+                document.getElementById('resultWord').classList.remove('show');
+
+                // Mostrar el timer nuevamente
+                document.getElementById('timer').style.display = 'block';
+
+                // Reiniciar timer
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                }
+                startTimer();
+
+                // Asegurar que el selector se mantenga visible
+                if (reviewMode) {
+                    document.getElementById('reviewSelector').style.display = 'flex';
+                }
+
+                return;
+            }
+
+            const listIndex = parseInt(listValue);
+            if (isNaN(listIndex) || listIndex < 0) {
+                return;
+            }
+
+            const wordsPerList = 25;
+            const startIndex = listIndex * wordsPerList;
+            const endIndex = Math.min(startIndex + wordsPerList, vocabulary.length);
+
+            // Crear lista con los índices de las palabras seleccionadas
+            reviewList = [];
+            for (let i = startIndex; i < endIndex; i++) {
+                reviewList.push(i);
+            }
+
+            reviewUsedIndices = new Set();
+
+            // Actualizar información de la lista
+            document.getElementById('reviewListSize').textContent = reviewList.length;
+            document.getElementById('reviewListTotal').textContent = reviewList.length;
+            document.getElementById('reviewCardNumber').textContent = '0';
+
+            // Mostrar información del modo repaso
+            document.getElementById('reviewModeInfo').style.display = 'block';
+
+            // Seleccionar la primera palabra del repaso (orden secuencial)
+            const firstReviewIndex = 0;
+            currentIndex = reviewList[firstReviewIndex];
+            reviewUsedIndices.add(firstReviewIndex);
+            document.getElementById('reviewCardNumber').textContent = reviewUsedIndices.size;
+
+            // Actualizar contenido
+            document.getElementById('originWord').textContent = vocabulary[currentIndex].origin;
+            document.getElementById('resultWord').textContent = vocabulary[currentIndex].result;
+            // Ocultar la respuesta inicialmente
+            document.getElementById('resultWord').classList.remove('show');
+
+            // Mostrar el timer nuevamente
+            document.getElementById('timer').style.display = 'block';
+
+            // Reiniciar timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            startTimer();
+
+            // Asegurar que el selector se mantenga visible
+            if (reviewMode) {
+                document.getElementById('reviewSelector').style.display = 'flex';
+            }
+        }
+
+        function stopQuiz() {
+            // Detener todos los timers
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            if (autoModeTimer) {
+                clearTimeout(autoModeTimer);
+                autoModeTimer = null;
+            }
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+
+            // Detener cualquier audio
+            speechSynthesis.cancel();
+
+            // Ocultar timers
+            document.getElementById('timer').style.display = 'none';
+            document.getElementById('nextWordTimer').style.display = 'none';
+
+            // Deshabilitar botones de audio
+            document.getElementById('playPauseBtn').disabled = true;
+            document.getElementById('showAnswerBtn').disabled = false;
+
+            // Ocultar botón para guardar palabra fallada
+            document.getElementById('saveFailedBtn').style.display = 'none';
+        }
+
+        function toggleReviewMode() {
+            const btn = document.getElementById('reviewBtn');
+            const reviewInfo = document.getElementById('reviewModeInfo');
+            const reviewSelector = document.getElementById('reviewSelector');
+
+            if (!reviewMode) {
+                // Detener el quiz completamente
+                stopQuiz();
+
+                // Activar modo de repaso - mostrar selector
+                reviewMode = true;
+                btn.textContent = 'Salir Repaso';
+                btn.style.background = 'rgba(0, 255, 0, 0.3)';
+                reviewSelector.style.display = 'flex';
+
+                // Poblar el selector si no está poblado
+                if (vocabulary.length > 0 && document.getElementById('reviewListSelect').options.length <= 1) {
+                    populateReviewSelector();
+                }
+
+                // Limpiar listado anterior y mostrar mensaje de espera
+                reviewList = [];
+                reviewUsedIndices = new Set();
+                reviewInfo.style.display = 'none';
+
+                // Mostrar mensaje de espera
+                document.getElementById('originWord').textContent = 'Selecciona un listado de 25 palabras para comenzar';
+                document.getElementById('resultWord').textContent = '';
+                document.getElementById('resultWord').classList.remove('show');
+            } else {
+                // Desactivar modo de repaso
+                reviewMode = false;
+                btn.textContent = 'Repaso 25 Palabras';
+                btn.style.background = 'rgba(255, 255, 255, 0.2)';
+                reviewSelector.style.display = 'none';
+                reviewInfo.style.display = 'none';
+
+                // Resetear selector
+                document.getElementById('reviewListSelect').value = '';
+
+                // Seleccionar una palabra aleatoria del vocabulario completo
+                if (vocabulary.length > 0) {
+                    currentIndex = Math.floor(Math.random() * vocabulary.length);
+                    usedIndices = new Set([currentIndex]);
+
+                    // Actualizar contenido
+                    document.getElementById('originWord').textContent = vocabulary[currentIndex].origin;
+                    document.getElementById('resultWord').textContent = vocabulary[currentIndex].result;
+                    // Ocultar la respuesta inicialmente
+                    document.getElementById('resultWord').classList.remove('show');
+
+                    // Reiniciar timer
+                    if (timerInterval) {
+                        clearInterval(timerInterval);
+                    }
+                    startTimer();
+                }
+            }
+        }
+
+        // Inicializar audio y timer
+        document.addEventListener('DOMContentLoaded', async function() {
+            setupWakeLock();
+
+            // Cargar el vocabulario desde el archivo
+            console.log('Selected level:', savedLevel);
+            const fileCandidates = getCandidateFilesForLevel(savedLevel);
+            console.log('Dataset candidates:', fileCandidates);
+
+            try {
+                const { vocab: loadedVocab, source } = await loadVocabularyFromFirstAvailable(fileCandidates);
+                console.log('Vocabulary source selected:', source);
+
+                if (!loadedVocab || loadedVocab.length === 0) {
+                    document.getElementById('originWord').textContent = 'Error: No se pudo cargar el vocabulario';
+                    return;
+                }
+
+                vocabulary = loadedVocab;
+                currentIndex = Math.floor(Math.random() * vocabulary.length);
+
+                // Reinicializar el conjunto de palabras usadas con la palabra actual
+                usedIndices = new Set([currentIndex]);
+
+                // Actualizar la palabra actual
+                document.getElementById('originWord').textContent = vocabulary[currentIndex].origin;
+                document.getElementById('resultWord').textContent = vocabulary[currentIndex].result;
+
+                // Actualizar nivel mostrado
+                const levelDisplay = levelNames[savedLevel] || savedLevel;
+                document.getElementById('currentLevel').textContent = levelDisplay;
+
+                // Cargar palabras falladas
+                loadFailedWords();
+
+                // Poblar el selector de listados de repaso
+                populateReviewSelector();
+
+                // Inicializar el timer y modo automático
+                // Cargar configuración desde localStorage
+                const savedMode = localStorage.getItem('popquiz_mode');
+                if (savedMode === 'auditory') {
+                    // Activar modo auditivo si se guardó
+                    auditoryMode = true;
+                    const auditoryBtn = document.getElementById('auditoryBtn');
+                    auditoryBtn.textContent = 'Modo Visual';
+                    auditoryBtn.style.background = 'rgba(0, 255, 0, 0.3)';
+                }
+
+                // Cargar tiempo de respuesta guardado
+                const savedResponseTime = localStorage.getItem('popquiz_responseTime');
+                if (savedResponseTime) {
+                    responseTime = parseInt(savedResponseTime);
+                    const responseTimeSelect = document.getElementById('responseTime');
+                    responseTimeSelect.value = savedResponseTime;
+                }
+
+                // Actualizar el tiempo inicial según el modo
+                const initialDelaySeconds = auditoryMode ? (responseTime + 4) : responseTime;
+                timeLeft = initialDelaySeconds;
+                document.getElementById('timeLeft').textContent = initialDelaySeconds;
+
+                startTimer();
+            } catch (error) {
+                document.getElementById('originWord').textContent = 'Error al cargar el vocabulario';
+                console.error('Error loading vocabulary:', error);
+            }
+        });
+
+        // Atajos de teclado
+        document.addEventListener('keydown', function(event) {
+            // Evitar el atajo si el usuario está escribiendo en un input o select
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT' || event.target.tagName === 'TEXTAREA') {
+                return;
+            }
+
+            // Barra espaciadora: mostrar resultado si no está visible, o play/pausar si ya está visible
+            if (event.key === ' ') {
+                event.preventDefault();
+                const resultWord = document.getElementById('resultWord');
+                if (resultWord.classList.contains('show')) {
+                    // Si la respuesta ya está visible, play/pausar
+                    togglePlayPause();
+                } else {
+                    // Si la respuesta no está visible, mostrarla
+                    showAnswer();
+                }
+            }
+
+            // Flecha derecha para siguiente palabra
+            if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                nextWord();
+            }
+        });
+    </script>
+</body>
+
+</html>
