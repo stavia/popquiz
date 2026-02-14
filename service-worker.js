@@ -51,7 +51,7 @@ function isTsvRequest(url) {
 
 // Strategy:
 // - HTML navigations: network-first, fallback to cached index.html.
-// - TSV (local or GitHub raw): stale-while-revalidate, so it can work offline after first load.
+// - TSV local data: stale-while-revalidate, so it can work offline after first load.
 // - Everything else (same-origin): cache-first (runtime), fallback to network.
 self.addEventListener('fetch', (event) => {
   const { request } = event;
@@ -78,8 +78,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // TSV data: allow caching cross-origin (opaque) responses too.
-  if (isTsvRequest(url) || url.hostname === 'raw.githubusercontent.com') {
+  // TSV data: cache local `.tsv` files from this app.
+  if (isTsvRequest(url)) {
     event.respondWith(
       (async () => {
         const cache = await caches.open(RUNTIME_NAME);
@@ -88,7 +88,6 @@ self.addEventListener('fetch', (event) => {
         const fetchPromise = (async () => {
           try {
             const network = await fetch(request);
-            // Cache even opaque responses; they can still be used offline later.
             cache.put(request, network.clone());
             return network;
           } catch (e) {

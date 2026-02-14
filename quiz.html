@@ -664,33 +664,8 @@
         // Cargar nivel desde localStorage
         const savedLevel = localStorage.getItem('popquiz_level') || 'intermediate';
 
-        function normalizeDatasetBase(base) {
-            if (!base) return '';
-            return base.endsWith('/') ? base : `${base}/`;
-        }
-
-        // Posibles ubicaciones del dataset TSV (en orden de prioridad)
-        // - `popquiz_dataset_base` (localStorage): ruta/URL personalizada (p.ej. raw.githubusercontent.com)
-        // - GitHub raw de `stavia/popquiz-data`
-        // - `data/tsv/`: dataset dentro de este repo (estructura actual)
-        // - `data/popquiz-data/...`: repo externo clonado como carpeta/submódulo
-        const userConfiguredDatasetBase = normalizeDatasetBase(localStorage.getItem('popquiz_dataset_base'));
-
-        // Intentar GitHub raw por defecto (main/master + posibles layouts)
-        const githubRawDatasetBaseCandidates = [
-            'https://raw.githubusercontent.com/stavia/popquiz-data/main/tsv/',
-            'https://raw.githubusercontent.com/stavia/popquiz-data/main/data/tsv/',
-            'https://raw.githubusercontent.com/stavia/popquiz-data/master/tsv/',
-            'https://raw.githubusercontent.com/stavia/popquiz-data/master/data/tsv/'
-        ];
-
-        const datasetBaseCandidates = [
-            ...(userConfiguredDatasetBase ? [userConfiguredDatasetBase] : []),
-            ...githubRawDatasetBaseCandidates,
-            'data/tsv/',
-            'data/popquiz-data/tsv/',
-            'data/popquiz-data/data/tsv/'
-        ];
+        // Dataset TSV local (siempre desde este repo)
+        const DATASET_BASE = 'data/tsv/';
 
         function buildLevelFiles(base) {
             return {
@@ -698,16 +673,16 @@
                 'vocabulario': `${base}vocabulary.tsv`,
                 'intermediate': `${base}book/intermediate.tsv`,
                 'advanced': `${base}book/advanced.tsv`,
+                'linking_words': `${base}linking_words.tsv`,
+                'conditionals': `${base}conditionals.tsv`,
                 'pronunciation': `${base}pronunciation.tsv`,
                 'custom': `${base}notebook.tsv`
             };
         }
 
         function getCandidateFilesForLevel(level) {
-            return datasetBaseCandidates.map((base) => {
-                const levelFiles = buildLevelFiles(base);
-                return levelFiles[level] || levelFiles['custom'];
-            });
+            const levelFiles = buildLevelFiles(DATASET_BASE);
+            return [levelFiles[level] || levelFiles['custom']];
         }
 
         // Mapeo de nombres de nivel para mostrar
@@ -716,6 +691,8 @@
             'vocabulario': 'Vocabulario',
             'intermediate': 'Intermedio',
             'advanced': 'Avanzado',
+            'linking_words': 'Linking words',
+            'conditionals': 'Conditionals',
             'pronunciation': 'Pronunciación',
             'custom': 'Personalizado'
         };
