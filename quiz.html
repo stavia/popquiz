@@ -217,12 +217,6 @@
             opacity: 0.8;
         }
 
-        .wake-lock-status {
-            margin-top: 10px;
-            font-size: 0.85em;
-            opacity: 0.9;
-        }
-
         .time-selector {
             margin-top: 15px;
             display: flex;
@@ -456,7 +450,6 @@
                 📚 Modo Repaso: <span id="reviewListSize">25</span> palabras |
                 Palabra <span id="reviewCardNumber">-</span> de <span id="reviewListTotal">25</span>
             </p>
-            <p id="wakeLockStatus" class="wake-lock-status"></p>
         </div>
     </div>
 
@@ -482,8 +475,7 @@
         let countdownInterval = null;
         let responseTime = 8; // Tiempo configurable en segundos
 
-        // Mantener pantalla activa (Wake Lock API)
-        // Nota: requiere gesto del usuario y normalmente HTTPS (o localhost).
+        // Wake Lock API (mantener pantalla activa en móviles; sin mensajes en UI).
         let wakeLock = null;
         let wakeLockWanted = false;
 
@@ -519,55 +511,24 @@
             }
         }
 
-        function setWakeLockStatus(message) {
-            const el = document.getElementById('wakeLockStatus');
-            if (!el) return;
-            el.textContent = message || '';
-        }
-
-        function syncWakeLockUi() {
-            // Botón "Pantalla activa" eliminado; en móviles se activa por defecto al primer toque.
-        }
-
         async function requestWakeLock() {
             if (!window.isSecureContext) {
                 wakeLockWanted = false;
-                setWakeLockStatus('Mantener pantalla activa: requiere HTTPS (o localhost).');
-                syncWakeLockUi();
                 return;
             }
 
             if (!('wakeLock' in navigator) || !navigator.wakeLock) {
                 wakeLockWanted = false;
-                if (isLikelyIOS()) {
-                    setWakeLockStatus('Mantener pantalla activa: no disponible en iPhone/iPad (limitación del navegador).');
-                } else {
-                    setWakeLockStatus('Mantener pantalla activa: no disponible en este navegador.');
-                }
-                syncWakeLockUi();
                 return;
             }
 
             wakeLockWanted = true;
             try {
                 wakeLock = await navigator.wakeLock.request('screen');
-                setWakeLockStatus('Mantener pantalla activa: activado.');
-                syncWakeLockUi();
 
-                wakeLock.addEventListener('release', () => {
-                    // El sistema puede soltarlo (bloqueo pantalla, cambio de pestaña, etc.)
-                    if (!wakeLockWanted) {
-                        setWakeLockStatus('Mantener pantalla activa: desactivado.');
-                    } else {
-                        setWakeLockStatus('Mantener pantalla activa: liberado (interactúa con la página para reactivarlo).');
-                    }
-                    syncWakeLockUi();
-                });
+                wakeLock.addEventListener('release', () => {});
             } catch (err) {
-                // Ej: NotAllowedError, NotSupportedError
                 wakeLockWanted = false;
-                setWakeLockStatus('Mantener pantalla activa: no se pudo activar (interactúa con la página e intenta de nuevo).');
-                syncWakeLockUi();
                 console.log('Wake Lock error:', err);
             }
         }
@@ -581,9 +542,6 @@
                 }
             } catch (err) {
                 console.log('Wake Lock release error:', err);
-            } finally {
-                setWakeLockStatus('Mantener pantalla activa: desactivado.');
-                syncWakeLockUi();
             }
         }
 
@@ -603,10 +561,8 @@
             const isMobile = isLikelyMobileDevice();
             const shouldAutoEnable = isMobile && !isWakeLockAutoDisabled();
 
-            // Si NO es móvil, no mostramos mensajes ni intentamos Wake Lock.
+            // Si NO es móvil, no intentamos Wake Lock.
             if (!isMobile) {
-                setWakeLockStatus('');
-                syncWakeLockUi();
                 return;
             }
 
@@ -627,22 +583,6 @@
                     requestWakeLock();
                 }
             });
-
-            // Estado inicial
-            if (!window.isSecureContext) {
-                setWakeLockStatus('Mantener pantalla activa: requiere HTTPS (o localhost).');
-            } else if (!('wakeLock' in navigator) || !navigator.wakeLock) {
-                if (isLikelyIOS()) {
-                    setWakeLockStatus('Mantener pantalla activa: no disponible en iPhone/iPad (limitación del navegador).');
-                } else {
-                    setWakeLockStatus('Mantener pantalla activa: no disponible en este navegador.');
-                }
-            } else {
-                if (shouldAutoEnable) {
-                    setWakeLockStatus('Mantener pantalla activa: se activará automáticamente al primer toque.');
-                }
-            }
-            syncWakeLockUi();
         }
 
         // Cargar nivel desde localStorage
