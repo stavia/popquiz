@@ -223,11 +223,6 @@
             opacity: 0.9;
         }
 
-        #wakeLockBtn.active {
-            background: rgba(0, 255, 0, 0.25);
-            border-color: rgba(0, 255, 0, 0.45);
-        }
-
         .time-selector {
             margin-top: 15px;
             display: flex;
@@ -433,7 +428,6 @@
             <button onclick="toggleAutoMode()" id="autoBtn">Modo Automático</button>
             <button onclick="toggleAuditoryMode()" id="auditoryBtn">100% Auditiva</button>
             <button onclick="toggleReviewMode()" id="reviewBtn">Repaso 25 Palabras</button>
-            <button onclick="toggleWakeLock()" id="wakeLockBtn" title="Evita que se apague la pantalla">Pantalla activa</button>
             <button onclick="clearFailedWords()" id="clearFailedBtn">🗑️ Vaciar Fallidas</button>
         </div>
 
@@ -532,9 +526,7 @@
         }
 
         function syncWakeLockUi() {
-            const btn = document.getElementById('wakeLockBtn');
-            if (!btn) return;
-            btn.classList.toggle('active', !!(wakeLock && wakeLockWanted));
+            // Botón "Pantalla activa" eliminado; en móviles se activa por defecto al primer toque.
         }
 
         async function requestWakeLock() {
@@ -567,14 +559,14 @@
                     if (!wakeLockWanted) {
                         setWakeLockStatus('Mantener pantalla activa: desactivado.');
                     } else {
-                        setWakeLockStatus('Mantener pantalla activa: liberado (vuelve a tocar "Pantalla activa" si hace falta).');
+                        setWakeLockStatus('Mantener pantalla activa: liberado (interactúa con la página para reactivarlo).');
                     }
                     syncWakeLockUi();
                 });
             } catch (err) {
                 // Ej: NotAllowedError, NotSupportedError
                 wakeLockWanted = false;
-                setWakeLockStatus('Mantener pantalla activa: no se pudo activar (toca "Pantalla activa" e intenta de nuevo).');
+                setWakeLockStatus('Mantener pantalla activa: no se pudo activar (interactúa con la página e intenta de nuevo).');
                 syncWakeLockUi();
                 console.log('Wake Lock error:', err);
             }
@@ -610,12 +602,6 @@
         function setupWakeLock() {
             const isMobile = isLikelyMobileDevice();
             const shouldAutoEnable = isMobile && !isWakeLockAutoDisabled();
-
-            // Ocultar el botón en escritorio (solo mostrarlo en móviles).
-            const wakeBtn = document.getElementById('wakeLockBtn');
-            if (wakeBtn) {
-                wakeBtn.style.display = isMobile ? '' : 'none';
-            }
 
             // Si NO es móvil, no mostramos mensajes ni intentamos Wake Lock.
             if (!isMobile) {
@@ -654,8 +640,6 @@
             } else {
                 if (shouldAutoEnable) {
                     setWakeLockStatus('Mantener pantalla activa: se activará automáticamente al primer toque.');
-                } else {
-                    setWakeLockStatus('Mantener pantalla activa: pulsa "Pantalla activa".');
                 }
             }
             syncWakeLockUi();
