@@ -4,11 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#667eea">
+    <meta name="theme-color" content="#1e1b4b">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <title>PopQuiz - Aprende Inglés</title>
     <style>
+        :root {
+            --bg-1: #0f172a;
+            --bg-2: #1e1b4b;
+            --bg-3: #312e81;
+            --surface: rgba(255, 255, 255, 0.06);
+            --surface-2: rgba(255, 255, 255, 0.09);
+            --border: rgba(255, 255, 255, 0.12);
+            --border-strong: rgba(255, 255, 255, 0.22);
+            --text: #f8fafc;
+            --text-muted: rgba(248, 250, 252, 0.7);
+            --accent: #fbbf24;
+            --accent-glow: rgba(251, 191, 36, 0.35);
+            --mint: #5eead4;
+            --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-pill: 999px;
+            --select-bg: #312e81;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,67 +39,91 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background: var(--bg-1);
+            background-image:
+                radial-gradient(ellipse 120% 80% at 50% -20%, rgba(99, 102, 241, 0.35), transparent),
+                radial-gradient(ellipse 80% 50% at 100% 40%, rgba(45, 212, 191, 0.1), transparent),
+                linear-gradient(165deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            color: white;
-            padding: 20px 10px 10px 10px;
+            color: var(--text);
+            padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            max-width: 600px;
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: 56px 18px 28px;
+            box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            max-width: 560px;
             width: 100%;
             position: relative;
         }
 
         @media (min-width: 480px) {
             .container {
-                padding: 30px;
+                padding: 60px 28px 36px;
             }
         }
 
         @media (min-width: 768px) {
             .container {
-                padding: 40px;
+                padding: 64px 36px 40px;
             }
         }
 
+        .quiz-header {
+            margin-bottom: 8px;
+        }
+
         h1 {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            margin-top: 50px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin: 0;
+            text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+            line-height: 1.2;
         }
 
         @media (min-width: 480px) {
             h1 {
-                font-size: 2.2em;
-                margin-bottom: 25px;
-                margin-top: 55px;
+                font-size: 1.65rem;
             }
         }
 
         @media (min-width: 768px) {
             h1 {
-                font-size: 2.5em;
-                margin-bottom: 30px;
-                margin-top: 60px;
+                font-size: 1.85rem;
+            }
+        }
+
+        .flashcard-panel {
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px 14px 18px;
+            margin-top: 16px;
+        }
+
+        @media (min-width: 480px) {
+            .flashcard-panel {
+                padding: 28px 22px 22px;
+                margin-top: 20px;
             }
         }
 
         .word-container {
-            margin: 20px 0;
-            min-height: 100px;
+            margin: 0;
+            min-height: 108px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -86,62 +133,61 @@
 
         @media (min-width: 480px) {
             .word-container {
-                margin: 30px 0;
-                min-height: 120px;
+                min-height: 128px;
             }
         }
 
         .origin-word {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #ffd700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--accent);
+            text-shadow: 0 2px 16px var(--accent-glow);
             word-wrap: break-word;
             overflow-wrap: break-word;
             hyphens: auto;
-            padding: 0 10px;
-            line-height: 1.4;
+            padding: 0 8px;
+            line-height: 1.35;
             max-width: 100%;
+            letter-spacing: -0.02em;
         }
 
         @media (min-width: 480px) {
             .origin-word {
-                font-size: 1.8em;
-                margin-bottom: 20px;
+                font-size: 1.65rem;
+                margin-bottom: 14px;
             }
         }
 
         @media (min-width: 768px) {
             .origin-word {
-                font-size: 1.5em;
+                font-size: 1.55rem;
             }
         }
 
         .result-word {
-            font-size: 1.2em;
-            font-weight: 300;
+            font-size: 1.1rem;
+            font-weight: 500;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-            color: #ffffff;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.45s ease;
+            color: var(--text);
             word-wrap: break-word;
             overflow-wrap: break-word;
             hyphens: auto;
-            padding: 0 10px;
+            padding: 0 8px;
             line-height: 1.4;
             max-width: 100%;
         }
 
         @media (min-width: 480px) {
             .result-word {
-                font-size: 1.6em;
+                font-size: 1.4rem;
             }
         }
 
         @media (min-width: 768px) {
             .result-word {
-                font-size: 1.5em;
+                font-size: 1.35rem;
             }
         }
 
@@ -149,188 +195,273 @@
             opacity: 1;
         }
 
-        .timer {
-            font-size: 1.0em;
-            margin: 20px 0;
-            color: #ffd700;
-        }
-
-        .controls {
-            margin-top: 20px;
+        .timer-row {
             display: flex;
-            flex-direction: row;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin: 18px 0 6px;
         }
 
-        @media (min-width: 480px) {
-            .controls {
-                margin-top: 30px;
-            }
-        }
-
-        button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 10px 16px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.9em;
+        .timer {
+            font-size: 0.875rem;
+            font-weight: 600;
             margin: 0;
-            transition: all 0.3s ease;
-            width: auto;
+            color: var(--accent);
+            background: rgba(251, 191, 36, 0.12);
+            border: 1px solid rgba(251, 191, 36, 0.28);
+            padding: 10px 18px;
+            border-radius: var(--radius-pill);
+            letter-spacing: 0.02em;
         }
 
-        @media (min-width: 480px) {
-            button {
-                padding: 12px 24px;
-                font-size: 1em;
-            }
-        }
-
-        button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+        #nextWordTimer {
+            display: none;
         }
 
         .progress-bar {
             width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            margin: 20px 0;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-pill);
+            margin: 16px 0 4px;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            background: linear-gradient(90deg, var(--mint), var(--accent));
             width: 0%;
             transition: width 0.1s linear;
+            border-radius: var(--radius-pill);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .controls {
+            margin-top: 22px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (min-width: 420px) {
+            .controls {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+
+        @media (min-width: 520px) {
+            .controls {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+        }
+
+        button {
+            font-family: inherit;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 14px;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            margin: 0;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+            width: auto;
+            min-height: 44px;
+        }
+
+        @media (min-width: 480px) {
+            button {
+                padding: 12px 18px;
+                font-size: 0.875rem;
+            }
+        }
+
+        button:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.14);
+            border-color: var(--border-strong);
+        }
+
+        button:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
         }
 
         .stats {
-            margin-top: 20px;
-            font-size: 0.9em;
-            opacity: 0.8;
+            margin-top: 22px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .stats p {
+            margin: 0.35rem 0;
+        }
+
+        #currentLevel {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        #reviewModeInfo {
+            display: none;
+            font-size: 0.8125rem;
+            padding: 12px 14px;
+            margin-top: 10px;
+            background: rgba(94, 234, 212, 0.08);
+            border: 1px solid rgba(94, 234, 212, 0.25);
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            line-height: 1.5;
         }
 
         .time-selector {
-            margin-top: 15px;
+            margin-top: 18px;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 0.9em;
-        }
-
-        .time-selector label {
-            color: white;
-            opacity: 0.9;
-        }
-
-        .time-selector select {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .time-selector select:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .time-selector select option {
-            background: #764ba2;
-            color: white;
-        }
-
-        .review-selector {
-            margin-top: 15px;
-            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            font-size: 0.9em;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
+            font-size: 0.875rem;
+        }
+
+        @media (min-width: 400px) {
+            .time-selector {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+        }
+
+        .time-selector label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .time-selector select,
+        .review-selector select {
+            font-family: inherit;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 16px;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .time-selector select:hover,
+        .review-selector select:hover {
+            border-color: var(--border-strong);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .time-selector select:focus-visible,
+        .review-selector select:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .time-selector select option,
+        .review-selector select option {
+            background: var(--select-bg);
+            color: var(--text);
+        }
+
+        .review-selector {
+            margin-top: 14px;
+            display: none;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.875rem;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
         .review-selector label {
-            color: white;
-            opacity: 0.9;
-            font-weight: bold;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
         }
 
         .review-selector select {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-            outline: none;
-            transition: all 0.3s ease;
-            min-width: 200px;
-        }
-
-        .review-selector select:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .review-selector select option {
-            background: #764ba2;
-            color: white;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
         }
 
         .audio-controls {
-            margin-top: 15px;
+            margin-top: 18px;
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 12px;
             align-items: center;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px 20px;
-            border-radius: 25px;
-            backdrop-filter: blur(10px);
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.28);
+            padding: 14px 16px;
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
         .audio-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            padding: 12px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 0;
-            transition: all 0.2s ease;
+            font-size: 1.2rem;
+            line-height: 1;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 44px;
-            height: 44px;
-            min-width: 44px;
-            min-height: 44px;
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            min-height: 48px;
         }
 
-        .audio-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
+        .audio-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.14);
+            border-color: var(--border-strong);
+            transform: scale(1.06);
         }
 
-        .audio-btn:active {
-            transform: scale(0.95);
+        .audio-btn:active:not(:disabled) {
+            transform: scale(0.96);
         }
 
         .audio-btn:disabled {
@@ -339,55 +470,81 @@
             transform: none;
         }
 
-        #playPauseBtn {
-            font-size: 1.2em;
+        .audio-btn:focus {
+            outline: none;
         }
 
-        #nextBtn {
-            font-size: 1.2em;
+        .audio-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
         }
 
-        #showAnswerBtn {
-            font-size: 1.2em;
+        .audio-btn.playing {
+            box-shadow: 0 0 0 3px var(--accent-glow), 0 8px 24px rgba(0, 0, 0, 0.35);
+            border-color: rgba(251, 191, 36, 0.45);
         }
 
         #saveFailedBtn {
-            font-size: 1.2em;
+            display: none;
+            font-size: 1.15rem;
         }
 
         .home-btn {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
+            top: max(12px, env(safe-area-inset-top));
+            left: max(12px, env(safe-area-inset-left));
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 16px;
+            border-radius: var(--radius-pill);
             cursor: pointer;
-            font-size: 0.85em;
-            transition: all 0.3s ease;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
             z-index: 1000;
             width: auto;
             white-space: nowrap;
+            min-height: 40px;
         }
 
         @media (min-width: 480px) {
             .home-btn {
-                padding: 10px 20px;
-                font-size: 0.9em;
-                top: 15px;
-                left: 15px;
+                padding: 10px 18px;
+                font-size: 0.875rem;
+                top: 16px;
+                left: 16px;
             }
         }
 
         .home-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.14);
+            border-color: var(--border-strong);
         }
 
         .home-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.97);
+        }
+
+        .home-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .result-word {
+                transition: none;
+            }
+
+            button:active,
+            .home-btn:active,
+            .audio-btn:active {
+                transform: none;
+            }
+
+            .audio-btn:hover:not(:disabled) {
+                transform: none;
+            }
         }
     </style>
 </head>
@@ -395,34 +552,40 @@
 <body>
 
     <div class="container">
-        <button class="home-btn" onclick="window.location.href='index.html'">🏠 Inicio</button>
+        <button type="button" class="home-btn" onclick="window.location.href='index.html'">🏠 Inicio</button>
 
-        <h1>🎓 PopQuiz Inglés</h1>
+        <header class="quiz-header">
+            <h1>🎓 PopQuiz Inglés</h1>
+        </header>
 
-        <div class="word-container">
-            <div class="origin-word" id="originWord">Cargando...</div>
-            <div class="result-word" id="resultWord"></div>
+        <section class="flashcard-panel" aria-label="Tarjeta actual">
+            <div class="word-container">
+                <div class="origin-word" id="originWord">Cargando...</div>
+                <div class="result-word" id="resultWord"></div>
+            </div>
+
+            <div class="audio-controls" id="audioControls">
+                <button type="button" class="audio-btn" onclick="showAnswer()" id="showAnswerBtn" title="Mostrar Respuesta" disabled>👁️</button>
+                <button type="button" class="audio-btn" onclick="togglePlayPause()" id="playPauseBtn" data-icon="▶" disabled>▶</button>
+                <button type="button" class="audio-btn" onclick="nextWord()" id="nextBtn" data-icon="⏭" title="Siguiente Palabra">⏭</button>
+                <button type="button" class="audio-btn" onclick="saveFailedWord()" id="saveFailedBtn" title="Guardar Palabra Fallada">❌</button>
+            </div>
+        </section>
+
+        <div class="timer-row">
+            <div class="timer" id="timer">Tiempo restante: <span id="timeLeft">8</span>s</div>
+            <div class="timer" id="nextWordTimer">Siguiente tarjeta en: <span id="nextWordCountdown">5</span>s</div>
         </div>
-
-        <div class="audio-controls" id="audioControls">
-            <button class="audio-btn" onclick="showAnswer()" id="showAnswerBtn" title="Mostrar Respuesta" disabled>👁️</button>
-            <button class="audio-btn" onclick="togglePlayPause()" id="playPauseBtn" data-icon="▶" disabled>▶</button>
-            <button class="audio-btn" onclick="nextWord()" id="nextBtn" data-icon="⏭" title="Siguiente Palabra">⏭</button>
-            <button class="audio-btn" onclick="saveFailedWord()" id="saveFailedBtn" title="Guardar Palabra Fallada" style="display: none;">❌</button>
-        </div>
-
-        <div class="timer" id="timer">Tiempo restante: <span id="timeLeft">8</span>s</div>
-        <div class="timer" id="nextWordTimer" style="display: none;">Siguiente tarjeta en: <span id="nextWordCountdown">5</span>s</div>
 
         <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
         </div>
 
         <div class="controls">
-            <button onclick="toggleAutoMode()" id="autoBtn">Modo Automático</button>
-            <button onclick="toggleAuditoryMode()" id="auditoryBtn">100% Auditiva</button>
-            <button onclick="toggleReviewMode()" id="reviewBtn">Repaso 25 Palabras</button>
-            <button onclick="clearFailedWords()" id="clearFailedBtn">🗑️ Vaciar Fallidas</button>
+            <button type="button" onclick="toggleAutoMode()" id="autoBtn">Modo Automático</button>
+            <button type="button" onclick="toggleAuditoryMode()" id="auditoryBtn">100% Auditiva</button>
+            <button type="button" onclick="toggleReviewMode()" id="reviewBtn">Repaso 25 Palabras</button>
+            <button type="button" onclick="clearFailedWords()" id="clearFailedBtn">🗑️ Vaciar Fallidas</button>
         </div>
 
         <div class="review-selector" id="reviewSelector">
@@ -445,8 +608,8 @@
         </div>
 
         <div class="stats">
-            <p>Nivel: <span style="color: #ffd700; font-weight: bold; margin-top: 10px;" id="currentLevel">-</span></p>
-            <p id="reviewModeInfo" style="display: none;">
+            <p>Nivel: <span id="currentLevel">-</span></p>
+            <p id="reviewModeInfo">
                 📚 Modo Repaso: <span id="reviewListSize">25</span> palabras |
                 Palabra <span id="reviewCardNumber">-</span> de <span id="reviewListTotal">25</span>
             </p>
