@@ -943,6 +943,11 @@
         function selectVoiceForResult() {
             const voices = speechSynthesis.getVoices();
             const englishVoices = voices.filter(v => v.lang.startsWith('en-US'));
+            if (englishVoices.length === 0) {
+                console.log('No en-US voices available; using browser default');
+                return;
+            }
+
             const googleVoice = englishVoices.find(v => v.name.startsWith('Google'));
             if (googleVoice) {
                 currentUtterance.voice = googleVoice;
@@ -956,7 +961,7 @@
                         v.name === 'Alex'
                     ) || englishVoices[0];
                 } else {
-                    currentUtterance.voice = defaultEnglishVoices[0];
+                    currentUtterance.voice = defaultEnglishVoices[0] || englishVoices[0];
                 }
             }
             console.log('Selected voice for result:', currentUtterance.voice);
@@ -1156,19 +1161,28 @@
 
                 // Si ya se usaron todas las palabras, resetea el conjunto
                 if (availableIndices.length === 0) {
-                    usedIndices = new Set([currentIndex]);
-                    availableIndices = [];
-                    for (let i = 0; i < vocabulary.length; i++) {
-                        if (i !== currentIndex) {
-                            availableIndices.push(i);
+                    if (vocabulary.length <= 1) {
+                        selectedIndex = 0;
+                        usedIndices = new Set([selectedIndex]);
+                    } else {
+                        usedIndices = new Set([currentIndex]);
+                        availableIndices = [];
+                        for (let i = 0; i < vocabulary.length; i++) {
+                            if (i !== currentIndex) {
+                                availableIndices.push(i);
+                            }
                         }
-                    }
-                }
 
-                // Seleccionar una palabra aleatoria de las disponibles
-                const randomAvailable = Math.floor(Math.random() * availableIndices.length);
-                selectedIndex = availableIndices[randomAvailable];
-                usedIndices.add(selectedIndex);
+                        const randomAvailable = Math.floor(Math.random() * availableIndices.length);
+                        selectedIndex = availableIndices[randomAvailable];
+                        usedIndices.add(selectedIndex);
+                    }
+                } else {
+                    // Seleccionar una palabra aleatoria de las disponibles
+                    const randomAvailable = Math.floor(Math.random() * availableIndices.length);
+                    selectedIndex = availableIndices[randomAvailable];
+                    usedIndices.add(selectedIndex);
+                }
 
                 // Ocultar información del modo repaso
                 document.getElementById('reviewModeInfo').style.display = 'none';
