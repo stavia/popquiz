@@ -1263,9 +1263,11 @@
             if (auditoryMode) {
                 btn.textContent = 'Modo Visual';
                 btn.style.background = 'rgba(0, 255, 0, 0.3)';
+                localStorage.setItem('popquiz_mode', 'auditory');
             } else {
                 btn.textContent = '100% Auditiva';
                 btn.style.background = 'rgba(255, 255, 255, 0.2)';
+                localStorage.setItem('popquiz_mode', 'visual');
             }
 
             // Reiniciar el timer con el nuevo tiempo
