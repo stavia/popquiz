@@ -22,6 +22,8 @@ Adiós	Goodbye
 - **Segunda columna**: Traducción en inglés
 - **Separador**: Tabulación (TAB)
 
+Las líneas sin tabulador se ignoran al cargar el quiz (revisa la consola del navegador si sospechas entradas perdidas).
+
 ## Personalización
 
 ### Modificar el tiempo de espera
@@ -35,16 +37,16 @@ Palabra española	English word
 
 ## Funcionalidades
 
-### Controles Disponibles
+### Controles disponibles
 - **Mostrar Respuesta**: Revela la traducción inmediatamente
 - **Siguiente Palabra**: Pasa a una palabra aleatoria diferente
-- **Modo Automático**: Cambia automáticamente entre palabras cada 5 segundos
-- **Modo Auditivo**: Practica sin leer
-- **Modo Repaso**: Repasa 25 palabras
+- **Modo Automático**: Cambia automáticamente entre palabras tras reproducir el audio
+- **Modo Auditivo**: Practica sin leer (la preferencia se guarda en el navegador)
+- **Modo Repaso**: Repasa listados de 25 palabras
 - **Guardar palabras falladas**: Guarda una palabra fallada para repasarla más tarde
 - **Vaciar Falladas**: Vacía la lista de palabras falladas
-- **Modo Pantalla Activa**: Evita que se apague la pantalla en dispositivos móviles
 
+En móviles compatibles, la app intenta mantener la pantalla activa con Wake Lock mientras usas el quiz.
 
 ## Licencia
 
