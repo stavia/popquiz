@@ -332,52 +332,52 @@
         <p class="subtitle">Selecciona tu nivel y comienza a aprender</p>
 
         <div class="level-grid">
-            <div class="level-card" onclick="startQuiz('beginner')">
+            <div class="level-card" role="button" tabindex="0" onclick="startQuiz('beginner')" onkeydown="handleLevelKey(event, 'beginner')">
                 <div class="level-card__icon" aria-hidden="true">🌟</div>
                 <h2>Principiante</h2>
                 <span class="level-badge">A1-A2</span>
                 <p>Palabras básicas y cotidianas</p>
             </div>
 
-            <div class="level-card" onclick="startQuiz('intermediate')">
+            <div class="level-card" role="button" tabindex="0" onclick="startQuiz('intermediate')" onkeydown="handleLevelKey(event, 'intermediate')">
                 <div class="level-card__icon" aria-hidden="true">💪</div>
                 <h2>Intermedio</h2>
                 <span class="level-badge">B1-B2</span>
                 <p>Vocabulario más amplio</p>
             </div>
 
-            <div class="level-card" onclick="startQuiz('advanced')">
+            <div class="level-card" role="button" tabindex="0" onclick="startQuiz('advanced')" onkeydown="handleLevelKey(event, 'advanced')">
                 <div class="level-card__icon" aria-hidden="true">🚀</div>
                 <h2>Avanzado</h2>
                 <span class="level-badge">C1-C2</span>
                 <p>Vocabulario complejo</p>
             </div>
 
-            <div class="level-card" onclick="startQuiz('linking_words')">
+            <div class="level-card" role="button" tabindex="0" onclick="startQuiz('linking_words')" onkeydown="handleLevelKey(event, 'linking_words')">
                 <div class="level-card__icon" aria-hidden="true">🔗</div>
                 <h2>Linking words</h2>
                 <p>Conectores y enlaces</p>
             </div>
 
-            <div class="level-card" onclick="startQuiz('conditionals')">
+            <div class="level-card" role="button" tabindex="0" onclick="startQuiz('conditionals')" onkeydown="handleLevelKey(event, 'conditionals')">
                 <div class="level-card__icon" aria-hidden="true">🔀</div>
                 <h2>Conditionals</h2>
                 <p>Condicionales en inglés</p>
             </div>
 
-            <div class="level-card" onclick="startQuiz('pronunciation')">
+            <div class="level-card" role="button" tabindex="0" onclick="startQuiz('pronunciation')" onkeydown="handleLevelKey(event, 'pronunciation')">
                 <div class="level-card__icon" aria-hidden="true">🗣️</div>
                 <h2>Pronunciación</h2>
                 <p>Mejora tu acento</p>
             </div>
 
-            <div class="level-card" onclick="startQuiz('vocabulario')">
+            <div class="level-card" role="button" tabindex="0" onclick="startQuiz('vocabulario')" onkeydown="handleLevelKey(event, 'vocabulario')">
                 <div class="level-card__icon" aria-hidden="true">📚</div>
                 <h2>Vocabulario y frases cortas</h2>
                 <p>Vocabulario personalizado</p>
             </div>
 
-            <div class="level-card" onclick="startQuiz('custom')">
+            <div class="level-card" role="button" tabindex="0" onclick="startQuiz('custom')" onkeydown="handleLevelKey(event, 'custom')">
                 <div class="level-card__icon" aria-hidden="true">⚙️</div>
                 <h2>Personalizado</h2>
                 <p>Frases propias</p>
@@ -403,6 +403,13 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./service-worker.js').catch(() => {});
             });
+        }
+
+        function handleLevelKey(event, level) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                startQuiz(level);
+            }
         }
 
         function startQuiz(level) {
