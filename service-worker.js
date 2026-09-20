@@ -1,7 +1,7 @@
 /* PopQuiz PWA Service Worker */
 /* eslint-disable no-restricted-globals */
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const PRECACHE_NAME = `popquiz-precache-${VERSION}`;
 const RUNTIME_NAME = `popquiz-runtime-${VERSION}`;
 
