@@ -1330,26 +1330,49 @@
             }
         }
 
+        function isSameFailedWord(a, b) {
+            return a.level === b.level && a.origin === b.origin && a.result === b.result;
+        }
+
+        function resolveFailedWordIndex(failedWord) {
+            if (failedWord.origin && failedWord.result) {
+                return vocabulary.findIndex(
+                    (word) => word.origin === failedWord.origin && word.result === failedWord.result
+                );
+            }
+
+            // Compatibilidad con entradas antiguas que solo tenían índice
+            if (
+                typeof failedWord.index === 'number' &&
+                failedWord.index >= 0 &&
+                failedWord.index < vocabulary.length
+            ) {
+                return failedWord.index;
+            }
+
+            return -1;
+        }
+
         function saveFailedWord() {
             if (currentIndex < 0 || currentIndex >= vocabulary.length) return;
 
             const word = vocabulary[currentIndex];
-            const wordKey = `${savedLevel}_${currentIndex}`;
 
             // Cargar palabras falladas actuales
             loadFailedWords();
 
-            // Verificar si ya está guardada
-            const alreadySaved = failedWords.some(fw => fw.level === savedLevel && fw.index === currentIndex);
+            const candidate = {
+                level: savedLevel,
+                origin: word.origin,
+                result: word.result
+            };
+
+            // Verificar si ya está guardada (por texto, no por índice)
+            const alreadySaved = failedWords.some((fw) => isSameFailedWord(fw, candidate));
 
             if (!alreadySaved) {
                 // Guardar la palabra fallada
-                failedWords.push({
-                    level: savedLevel,
-                    index: currentIndex,
-                    origin: word.origin,
-                    result: word.result
-                });
+                failedWords.push(candidate);
 
                 // Guardar en localStorage
                 localStorage.setItem('popquiz_failedWords', JSON.stringify(failedWords));
@@ -1454,17 +1477,17 @@
             if (listValue === 'failed') {
                 loadFailedWords();
 
-                // Filtrar palabras falladas del nivel actual
-                const currentLevelFailed = failedWords.filter(fw => fw.level === savedLevel);
+                // Filtrar palabras falladas del nivel actual y resolverlas por texto
+                const currentLevelFailed = failedWords.filter((fw) => fw.level === savedLevel);
+                reviewList = currentLevelFailed
+                    .map((fw) => resolveFailedWordIndex(fw))
+                    .filter((index, position, list) => index >= 0 && list.indexOf(index) === position);
 
-                if (currentLevelFailed.length === 0) {
+                if (reviewList.length === 0) {
                     alert('No hay palabras falladas guardadas para este nivel.');
                     select.value = '';
                     return;
                 }
-
-                // Crear lista con los índices de las palabras falladas
-                reviewList = currentLevelFailed.map(fw => fw.index);
 
                 // Actualizar información de la lista
                 document.getElementById('reviewListSize').textContent = reviewList.length;
