@@ -801,15 +801,32 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const text = await response.text();
-                const lines = text.split('\n').filter(line => line.trim());
+                const lines = text.split('\n');
+                const vocab = [];
+                const skippedLines = [];
 
-                const vocab = lines.map(line => {
-                    const parts = line.split('\t');
-                    return {
-                        origin: parts[0]?.trim() || '',
-                        result: parts[1]?.trim() || ''
-                    };
-                }).filter(item => item.origin && item.result);
+                lines.forEach((line, index) => {
+                    const trimmed = line.trim();
+                    if (!trimmed) return;
+
+                    const parts = trimmed.split('\t');
+                    const origin = parts[0]?.trim() || '';
+                    const result = parts[1]?.trim() || '';
+
+                    if (parts.length < 2 || !origin || !result) {
+                        skippedLines.push(index + 1);
+                        return;
+                    }
+
+                    vocab.push({ origin, result });
+                });
+
+                if (skippedLines.length > 0) {
+                    console.warn(
+                        `Skipped ${skippedLines.length} invalid TSV line(s) in ${filename}:`,
+                        skippedLines.join(', ')
+                    );
+                }
 
                 console.log('Loaded vocabulary items:', vocab.length);
                 return vocab;
