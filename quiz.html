@@ -762,7 +762,9 @@
                 'linking_words': `${base}linking_words.tsv`,
                 'conditionals': `${base}conditionals.tsv`,
                 'pronunciation': `${base}pronunciation.tsv`,
-                'custom': `${base}notebook.tsv`
+                'custom': `${base}notebook.tsv`,
+                'idioms': `${base}idioms.tsv`,
+                'small_talks': `${base}small_talks.tsv`
             };
         }
 
@@ -780,7 +782,9 @@
             'linking_words': 'Linking words',
             'conditionals': 'Conditionals',
             'pronunciation': 'Pronunciación',
-            'custom': 'Personalizado'
+            'custom': 'Personalizado',
+            'idioms': 'Idioms',
+            'small_talks': 'Small talks'
         };
 
         // Cargar vocabulario según el nivel
@@ -1697,8 +1701,11 @@
                 const { vocab: loadedVocab, source } = await loadVocabularyFromFirstAvailable(fileCandidates);
                 console.log('Vocabulary source selected:', source);
 
+                const levelDisplay = levelNames[savedLevel] || savedLevel;
+                document.getElementById('currentLevel').textContent = levelDisplay;
+
                 if (!loadedVocab || loadedVocab.length === 0) {
-                    document.getElementById('originWord').textContent = 'Error: No se pudo cargar el vocabulario';
+                    document.getElementById('originWord').textContent = 'Este listado está vacío. Añade frases al archivo TSV.';
                     return;
                 }
 
@@ -1711,10 +1718,6 @@
                 // Actualizar la palabra actual
                 document.getElementById('originWord').textContent = vocabulary[currentIndex].origin;
                 document.getElementById('resultWord').textContent = vocabulary[currentIndex].result;
-
-                // Actualizar nivel mostrado
-                const levelDisplay = levelNames[savedLevel] || savedLevel;
-                document.getElementById('currentLevel').textContent = levelDisplay;
 
                 // Cargar palabras falladas
                 loadFailedWords();
